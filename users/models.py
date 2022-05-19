@@ -43,3 +43,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email}"
+
+class Otp(models.Model):
+    OTP_TYPE_CHOICES = [
+        ('AA', 'active_account'),
+        ('RP', 'reset_password')
+    ]
+    user = models.ForeignKey(User,related_name='otp_user',on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    has_used = models.BooleanField(default=False)
+    otp_type = models.CharField(choices=OTP_TYPE_CHOICES, max_length=20, default='', blank=True)

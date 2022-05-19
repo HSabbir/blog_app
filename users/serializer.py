@@ -11,3 +11,7 @@ class RegistrationSerializer(FriendlyErrorMessagesMixin, serializers.Serializer)
     email = serializers.EmailField()
     name = serializers.CharField(max_length=100)
     password= serializers.CharField()
+
+class OtpVerificationSerializer(FriendlyErrorMessagesMixin, serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField()
