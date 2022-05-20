@@ -5,6 +5,11 @@ from rest_framework_friendly_errors.mixins import FriendlyErrorMessagesMixin
 
 
 class BlogSerializer(FriendlyErrorMessagesMixin,serializers.ModelSerializer):
+    created_by = serializers.SerializerMethodField('get_creator')
+
+    def get_creator(self,obj):
+        return obj.created_by.email
+
     class Meta:
         model = Blog
         fields = ['title','description','blog_status',
