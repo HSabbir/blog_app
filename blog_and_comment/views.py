@@ -8,25 +8,34 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serializer import *
 from .models import *
-from .custom_mixins import GetSerializerClassMixin
+from .custom_mixins import *
 
 
-class PostViewsets(GetSerializerClassMixin,viewsets.ModelViewSet):
+class PostViewsets(GetSerializerClassMixin, PermissionPolicyMixin,
+                   viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [AllowAny]
 
     serializer_action_classes = {
         'retrieve': PostDetails,
     }
 
-    def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsCreatorOrReadOnly]
-        elif self.action in ['create']:
-            self.permission_classes = [IsAuthenticated]
-        else:
-            self.permission_classes = [AllowAny]
-        return super().get_permissions()
+    permission_classes_per_method = {
+        'create': [IsAuthenticated],
+        'update': [IsCreatorOrReadOnly],
+        'partial_update': [IsCreatorOrReadOnly],
+        'destroy': [IsCreatorOrReadOnly]
+    }
+
+    # def get_permissions(self):
+    #     if self.action in ['update', 'partial_update', 'destroy']:
+    #         self.permission_classes = [IsCreatorOrReadOnly]
+    #     elif self.action in ['create']:
+    #         self.permission_classes = [IsAuthenticated]
+    #     else:
+    #         self.permission_classes = [AllowAny]
+    #     return super().get_permissions()
 
     def get_queryset(self, *args, **kwargs):
         current_user = self.request.user
@@ -41,21 +50,27 @@ class PostViewsets(GetSerializerClassMixin,viewsets.ModelViewSet):
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CommentView(mixins.CreateModelMixin,
-                mixins.UpdateModelMixin,
-                 mixins.DestroyModelMixin,
-                viewsets.GenericViewSet):
 
+class CommentView(PermissionPolicyMixin,mixins.CreateModelMixin,
+                  mixins.UpdateModelMixin,
+                  mixins.DestroyModelMixin,
+                  viewsets.GenericViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+    permission_classes_per_method = {
+        'create': [IsAuthenticated],
+        'update': [IsCreatorOrReadOnly],
+        'partial_update': [IsCreatorOrReadOnly],
+        'destroy': [IsCreatorOrReadOnly]
+    }
 
-    def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsCreatorOrReadOnly]
-        elif self.action in ['create']:
-            self.permission_classes = [IsAuthenticated]
-        return super().get_permissions()
+    # def get_permissions(self):
+    #     if self.action in ['update', 'partial_update', 'destroy']:
+    #         self.permission_classes = [IsCreatorOrReadOnly]
+    #     elif self.action in ['create']:
+    #         self.permission_classes = [IsAuthenticated]
+    #     return super().get_permissions()
 
     def create(self, request, *args, **kwargs):
         author = request.user
