@@ -21,7 +21,7 @@ class PostSerializer(FriendlyErrorMessagesMixin, serializers.ModelSerializer):
         }
 
 
-class CommentSerializer(FriendlyErrorMessagesMixin,serializers.ModelSerializer):
+class CommentSerializer(FriendlyErrorMessagesMixin, serializers.ModelSerializer):
     created_by = serializers.SerializerMethodField('get_creator')
 
     def get_creator(self, obj):
@@ -29,16 +29,17 @@ class CommentSerializer(FriendlyErrorMessagesMixin,serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['post','body','created_at', 'updated_at', 'created_by']
+        fields = ['post', 'body', 'created_at', 'updated_at', 'created_by']
         extra_kwargs = {
             'created_at': {'read_only': True},
             'updated_at': {'read_only': True},
             'created_by': {'read_only': True},
-            'post' : {'write_only': True}
+            'post': {'write_only': True}
         }
 
-class PostDetails(FriendlyErrorMessagesMixin,serializers.ModelSerializer):
-    comments = CommentSerializer(many=True,read_only=True)
+
+class PostDetails(FriendlyErrorMessagesMixin, serializers.ModelSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
     created_by = serializers.SerializerMethodField('get_creator')
 
     def get_creator(self, obj):
@@ -47,4 +48,4 @@ class PostDetails(FriendlyErrorMessagesMixin,serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['title', 'description', 'status',
-                  'created_at', 'updated_at', 'created_by','comments']
+                  'created_at', 'updated_at', 'created_by', 'comments']

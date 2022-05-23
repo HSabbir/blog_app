@@ -1,14 +1,12 @@
 from django.db.models import Q
-from django.shortcuts import render
 from rest_framework import viewsets, status, mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .permissions import IsCreatorOrReadOnly
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from .custom_mixins import *
+from .permissions import IsCreatorOrReadOnly
 from .serializer import *
 from .models import *
-from .custom_mixins import *
 
 
 class PostViewsets(GetSerializerClassMixin, PermissionPolicyMixin,
@@ -51,7 +49,7 @@ class PostViewsets(GetSerializerClassMixin, PermissionPolicyMixin,
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CommentView(PermissionPolicyMixin,mixins.CreateModelMixin,
+class CommentView(PermissionPolicyMixin, mixins.CreateModelMixin,
                   mixins.UpdateModelMixin,
                   mixins.DestroyModelMixin,
                   viewsets.GenericViewSet):
