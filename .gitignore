@@ -1,1 +1,3 @@
 blog_app/database_conf.py
+__pycache__/
+venv
