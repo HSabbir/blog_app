@@ -3,6 +3,8 @@ from rest_framework import viewsets, status, mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
+from rest_framework import filters
+
 from .custom_mixins import *
 from .permissions import IsCreatorOrReadOnly
 from .serializer import *
@@ -14,6 +16,10 @@ class PostViewsets(GetSerializerClassMixin, PermissionPolicyMixin,
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [AllowAny]
+
+    filter_backends = [filters.SearchFilter,filters.OrderingFilter]
+    ordering_fields = ['created_at', 'updated_at']
+    search_fields = ['title', 'description', 'created_by__name']
 
     serializer_action_classes = {
         'retrieve': PostDetails,

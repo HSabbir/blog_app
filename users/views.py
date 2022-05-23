@@ -24,8 +24,16 @@ def register(request):
                 name=data_serializer.data.get('name'),
 
             )
-            user_instance.set_password(data_serializer.data.get('password'))
+            try:
+                validate_password(data_serializer.data.get('password'),user_instance)
+            except Exception as e:
+                return Response({
+                    "code": 401,
+                    "message": str(e),
+                })
 
+            password = make_password(data_serializer.data.get('password'))
+            user_instance.password = password
             user_instance.save()
 
             send_otp_via_mail("Your Account Verification OTP",data_serializer.data.get('email'),'AA')
