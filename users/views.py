@@ -19,7 +19,7 @@ def register(request):
         payload = request.data
         data_serializer = RegistrationSerializer(data=payload)
         if data_serializer.is_valid():
-            user_instance = User.objects.create(
+            user_instance = User(
                 email=data_serializer.data.get('email'),
                 name=data_serializer.data.get('name'),
 
@@ -33,7 +33,7 @@ def register(request):
                 })
 
             password = make_password(data_serializer.data.get('password'))
-            user_instance.password = password
+            user_instance.set_password(password)
             user_instance.save()
 
             send_otp_via_mail("Your Account Verification OTP",data_serializer.data.get('email'),'AA')

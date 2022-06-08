@@ -82,7 +82,8 @@ TEMPLATES = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
 }
 
 SIMPLE_JWT = {
@@ -154,6 +155,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+CELERY_TIMEZONE = "UTC"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -171,3 +176,5 @@ EMAIL_PORT = 2525
 EMAIL_HOST_USER = 'bsse1014@iit.du.ac.bd'
 EMAIL_HOST_PASSWORD = 'fFGmLYcPj6rGSX9'
 EMAIL_USE_TLS = True
+
+

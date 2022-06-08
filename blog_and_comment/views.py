@@ -1,9 +1,11 @@
 from django.db.models import Q
 from rest_framework import viewsets, status, mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from rest_framework import filters
+from rest_framework_xml.renderers import XMLRenderer
 
 from .custom_mixins import *
 from .permissions import IsCreatorOrReadOnly
@@ -16,6 +18,7 @@ class PostViewsets(GetSerializerClassMixin, PermissionPolicyMixin,
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [AllowAny]
+    renderer_classes = [JSONRenderer,XMLRenderer]
 
     filter_backends = [filters.SearchFilter,filters.OrderingFilter]
     ordering_fields = ['created_at', 'updated_at']
